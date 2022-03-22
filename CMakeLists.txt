@@ -4,6 +4,8 @@ project(TFLiteBuildCheck)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(TFLITE_VERSION "2.7.1")
+
 if (APPLE)
     set(OS_NAME "macos")
     execute_process(
@@ -14,7 +16,7 @@ if (APPLE)
 endif()
 
 
-set(TFLITE_DIST_DIR ${CMAKE_SOURCE_DIR}/tflite-dist/${OS_NAME}-${ARCH_NAME})
+set(TFLITE_DIST_DIR ${CMAKE_SOURCE_DIR}/tflite-dist/${TFLITE_VERSION}/${OS_NAME}-${ARCH_NAME})
 
 message(STATUS "APPLE is " ${APPLE})
 message(STATUS "ARCH_NAME is " ${ARCH_NAME})
