@@ -2,12 +2,37 @@
 
 import argparse
 from operator import itemgetter
+import os
+import glob
+import pathlib
+import shutil
+import sys
 
 default_tflite_version = '2.7.1'
+tflite_dist = 'tflite-dist'
+libs = [
+    'bazel-bin/tensorflow/lite/libtensorflowlite.dylib',
+]
+includes = [
+    ('tensorflow/core/public/version.h', 'tensorflow/core/public'),
+    ('tensorflow/lite/*.h', 'tensorflow/lite'),
+    ('tensorflow/lite/c/*.h', 'tensorflow/lite/c'),
+    ('tensorflow/lite/core/*.h', 'tensorflow/lite/core'),
+    ('tensorflow/lite/core/api/*.h', 'tensorflow/lite/core/api'),
+    ('tensorflow/lite/schema/*.h', 'tensorflow/lite/schema'),
+    ('tensorflow/lite/internal/*.h', 'tensorflow/lite/internal',),
+    ('tensorflow/lite/kernels/*.h', 'tensorflow/lite/kernels'),
+    ('tensorflow/lite/experimental/resource/*.h',
+     'tensorflow/lite/experimental/resource'),
+    ('bazel-bin/external/flatbuffers/_virtual_includes/flatbuffers/flatbuffers/*.h', 'flatbuffers'),
+]
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
+def parse_args(argv):
+    prog = argv[0]
+    args = argv[1:]
+
+    parser = argparse.ArgumentParser(prog)
     parser.add_argument('--version', '-v', action='store',
                         help='tflite version(default: {})'.format(default_tflite_version), default=default_tflite_version)
     parser.add_argument('--os', '-o', help='os name',
@@ -24,22 +49,77 @@ def parse_args():
     delete_parser = subparsers.add_parser(
         'delete', help='delete header and library files')
 
-    return parser.parse_args()
+    return parser.parse_args(args)
+
+
+def delete(path):
+    if os.path.exists(path):
+        print('-' * 80)
+        print('>> delete {}'.format(path))
+        shutil.rmtree(path)
 
 
 def main():
-    args = vars(parse_args())
-    command, os_name, arch_name, tflite_version, tflite_source_path = (args.get(k) for k in (
+    # parse arguments
+    args = vars(parse_args(sys.argv))
+    command, os_name, arch_name, tflite_version, tflite_source_dir = (args.get(k) for k in (
         'command', 'os', 'arch', 'version', 'source'))
+
+    # change working directory to project root
+    working_dir = pathlib.Path(__file__).parent.resolve()
+    os.chdir(working_dir)
+
+    print('-' * 80)
+    print('>> change working directory to {}'.format(working_dir))
+
+    tflite_dist_dir = os.path.relpath(os.path.join(
+        working_dir, tflite_dist, tflite_version, '{}-{}'.format(os_name, arch_name)), working_dir)
+    include_dir = os.path.relpath(os.path.join(
+        tflite_dist_dir, 'include'), working_dir)
+    lib_dir = os.path.relpath(os.path.join(
+        tflite_dist_dir, 'lib'), working_dir)
+
     print('-' * 80)
     print('command: {}\nos: {}\narch: {}\ntflite version: {}\ntflite source path: {}'.format(
-        command, os_name, arch_name, tflite_version, tflite_source_path))
-    print('-' * 80)
+        command, os_name, arch_name, tflite_version, tflite_source_dir))
+    print('tflite dist root: {}'.format(tflite_dist_dir))
+    print('tflite dist lib: {}'.format(lib_dir))
+    print('tflite dist include: {}'.format(include_dir))
 
     if command == 'copy':  # copy command
-        None
+        delete(tflite_dist_dir)
+
+        os.makedirs(lib_dir, exist_ok=True)
+        os.makedirs(include_dir, exist_ok=True)
+
+        print('-' * 80)
+        print('>> copy library')
+
+        for source in libs:
+            source_pattern = os.path.join(tflite_source_dir, source)
+            target_dir = lib_dir
+            print('{} -> {}'.format(source_pattern, target_dir))
+
+            os.makedirs(target_dir, exist_ok=True)
+
+            for file in sorted(glob.glob(source_pattern)):
+                shutil.copy(file, target_dir)
+
+        print('-' * 80)
+        print('>> copy headers')
+
+        for source, target in includes:
+            source_pattern = os.path.join(tflite_source_dir, source)
+            target_dir = os.path.join(include_dir, target)
+            print('{} -> {}'.format(source_pattern, target_dir))
+
+            os.makedirs(target_dir, exist_ok=True)
+
+            for file in sorted(glob.glob(source_pattern)):
+                shutil.copy(file, target_dir)
+
     else:  # delete command
-        None
+        delete(tflite_dist_dir)
 
 
 if __name__ == "__main__":
