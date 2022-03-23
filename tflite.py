@@ -7,11 +7,12 @@ import glob
 import pathlib
 import shutil
 import sys
+import re
 
 default_tflite_version = '2.7.1'
 tflite_dist = 'tflite-dist'
 libs = [
-    'bazel-bin/tensorflow/lite/libtensorflowlite.dylib',
+    'bazel-bin/tensorflow/lite/libtensorflowlite.(so|lib|dylib)',
 ]
 includes = [
     ('tensorflow/core/public/version.h', 'tensorflow/core/public'),
@@ -38,7 +39,7 @@ def parse_args(argv):
     parser.add_argument('--os', '-o', help='os name',
                         choices=['windows', 'linux', 'macos'], required=True)
     parser.add_argument('--arch', '-a', help='arch name',
-                        choices=['x86', 'x86_64', 'arm64'], required=True)
+                        choices=['x86', 'x86_64', 'arm64', 'aarch64'], required=True)
 
     subparsers = parser.add_subparsers(dest='command', help='command')
     copy_parser = subparsers.add_parser(
@@ -58,6 +59,8 @@ def delete(path):
         print('>> delete {}'.format(path))
         shutil.rmtree(path)
 
+def glob_re(pattern, strings):
+    return filter(re.compile(pattern).fullmatch, strings)
 
 def main():
     # parse arguments
@@ -98,12 +101,18 @@ def main():
         for source in libs:
             source_pattern = os.path.join(tflite_source_dir, source)
             target_dir = lib_dir
+            p = pathlib.PurePosixPath(source_pattern)
+            path = os.path.join(*p.parts[:-1])
+            pattern = p.name
+            print(path)
+            print(pattern)
             print('{} -> {}'.format(source_pattern, target_dir))
 
             os.makedirs(target_dir, exist_ok=True)
 
-            for file in sorted(glob.glob(source_pattern)):
-                shutil.copy(file, target_dir)
+            # for file in sorted(glob.glob(source_pattern)):
+            for file in glob_re(pattern, os.listdir(path)):
+                shutil.copy(os.path.join(path,file), target_dir)
 
         print('-' * 80)
         print('>> copy headers')
