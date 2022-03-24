@@ -8,6 +8,8 @@ import pathlib
 import shutil
 import sys
 import re
+import errno
+import stat
 
 default_tflite_version = '2.7.1'
 tflite_dist = 'tflite-dist'
@@ -54,12 +56,19 @@ def parse_args(argv):
 
     return parser.parse_args(args)
 
+def handleRemoveReadonly(func, path, exc):
+    excvalue = exc[1]
+    if func in (os.unlink, os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
+        os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
+        func(path)
+    else:
+        raise
 
 def delete(path):
     if os.path.exists(path):
         print('-' * 80)
         print('>> delete {}'.format(path))
-        shutil.rmtree(path)
+        shutil.rmtree(path, ignore_errors=False, onerror=handleRemoveReadonly)
 
 def glob_re(pattern, strings):
     return filter(re.compile(pattern).fullmatch, strings)
