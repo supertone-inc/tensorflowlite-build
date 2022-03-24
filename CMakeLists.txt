@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.16)
 project(TFLiteBuildCheck)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(TFLITE_VERSION "2.7.1")
 
