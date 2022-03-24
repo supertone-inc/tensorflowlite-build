@@ -12,7 +12,9 @@ import re
 default_tflite_version = '2.7.1'
 tflite_dist = 'tflite-dist'
 libs = [
-    'bazel-bin/tensorflow/lite/libtensorflowlite.(so|lib|dylib)',
+    ('bazel-bin/tensorflow/lite/libtensorflowlite.so', 'linux'),
+    ('bazel-bin/tensorflow/lite/libtensorflowlite.dylib', 'macos'),
+    ('bazel-bin/tensorflow/lite/tensorflowlite.dll', 'windows'),
 ]
 includes = [
     ('tensorflow/core/public/version.h', 'tensorflow/core/public'),
@@ -98,21 +100,15 @@ def main():
         print('-' * 80)
         print('>> copy library')
 
-        for source in libs:
+        for source in [s for s, o in libs if o == os_name]:
             source_pattern = os.path.join(tflite_source_dir, source)
             target_dir = lib_dir
-            p = pathlib.PurePosixPath(source_pattern)
-            path = os.path.join(*p.parts[:-1])
-            pattern = p.name
-            print(path)
-            print(pattern)
             print('{} -> {}'.format(source_pattern, target_dir))
 
             os.makedirs(target_dir, exist_ok=True)
 
-            # for file in sorted(glob.glob(source_pattern)):
-            for file in glob_re(pattern, os.listdir(path)):
-                shutil.copy(os.path.join(path,file), target_dir)
+            for file in sorted(glob.glob(source_pattern)):
+                shutil.copy(file, target_dir)
 
         print('-' * 80)
         print('>> copy headers')
