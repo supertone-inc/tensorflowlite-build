@@ -1,9 +1,9 @@
 # tflite-build
 This includes custom build manuals of TensorFlow Lite C++ shard library with XNNPACK and the CLI usage copying built libraries and required headers.
 
-## build TFLite shard library
-### macos
-#### Prerequisites
+# build TFLite shard library
+## macos
+### Prerequisites
 - python3
   - [pyenv(Recommended)](https://github.com/pyenv/pyenv#homebrew-in-macos)
   - dependent packages
@@ -13,7 +13,8 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
     ```
 - Bazel
   - [Bazelisk(Recommended)](https://bazel.build/install/bazelisk)
-#### Build
+- CMake 3.16+
+### Build
 - git clone [TensorFlow repository](https://github.com/tensorflow/tensorflow)
   - checkout v2.7.1 release branch
 - change bazel version to 4.2.1
@@ -39,7 +40,7 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   ```
   $ ./tflite.py -o macos -a arm64 copy ../tensorflow
   ```
-#### Test
+### Test
 - configure & build
   ```console
   $ cd tflite-build
@@ -51,8 +52,8 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   $ ./build/TFLiteBuildCheck ./models/ssd_mobilenet_v1_1_metadata_1.tflite 
   ```
 
-### linux
-#### Prerequisites
+## linux
+### Prerequisites
 - python3
   - dependent packages
     ```console
@@ -61,7 +62,8 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
     ```
 - Bazel
   - [Bazelisk(Recommended)](https://bazel.build/install/bazelisk)
-#### Build
+- CMake 3.16+
+### Build
 - git clone [TensorFlow repository](https://github.com/tensorflow/tensorflow)
   - checkout v2.7.1 release branch
 - change bazel version to 4.2.1
@@ -87,7 +89,7 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   ```
   $ ./tflite.py -o macos -a aarch64 copy ../tensorflow
   ```
-#### Test
+### Test
 - configure & build
   ```console
   $ cd tflite-build
@@ -99,8 +101,8 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   $ ./build/TFLiteBuildCheck ./models/ssd_mobilenet_v1_1_metadata_1.tflite 
   ```
 
-### windows(x64)
-#### Prerequisites
+## windows(x64)
+### Prerequisites
 - python3
   - dependent packages
     ```cmd
@@ -108,7 +110,8 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
     c:\> pip3 install -U --user keras_preprocessing --no-deps
     ```
 - Bazel
-  - [Bazel v4.2.1](https://github.com/bazelbuild/bazel/releases/tag/4.2.1)
+  - [Bazelisk(Recommended)](https://docs.bazel.build/versions/main/install-bazelisk.html)
+    - Add to PATH environment variable
 - MSYS2
   - [MSYS2](https://www.msys2.org/)
     ```cmd
@@ -119,14 +122,10 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
     - Visual C++ Redistributable for Visual Studio 2019 (version 16.11) x64
     - Build Tools for Visual Studio 2019 (version 16.11) x64
       - In the "Workloads" tab enable "Desktop development with C++"
-#### Build
+- CMake 3.16+
+### Build
 - git clone [TensorFlow repository](https://github.com/tensorflow/tensorflow)
   - checkout v2.7.1 release branch
-- change bazel version to 4.2.1
-  - `.bazelversion`  
-    ```
-    4.2.1
-    ```
 - configure and build
   ```cmd
   c:\> cd tensorflow
@@ -141,7 +140,7 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   c:\> cd tflite-build
   c:\tflite-build> python tflite.py -o windows -a x86_64 copy ..\tensorflow
   ```
-#### Test
+### Test
 - configure & build
   ```cmd
   c:\tflite-build> cmake -S . -B .\build -G "Visual Studio 16 2019" -T host=x64 -A x64
@@ -152,7 +151,7 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   c:\tflite-build> .\build\Release\TFLiteBuildCheck.exe .\models\ssd_mobilenet_v1_1_metadata_1.tflite
   ```
 
-## References
+# References
 - [Build Tensorflow from source on Ubuntu, macOS](https://www.tensorflow.org/install/source)
 - [Build Tensorflow from source on Windows](https://www.tensorflow.org/install/source_windows)
 - [TensorFlow Lite C++ Series](https://www.youtube.com/playlist?list=PLYV_j9XEhvorTV-ClcNA2xUb5YsdUHgRX)
