@@ -39,6 +39,17 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   ```
   $ ./tflite.py -o macos -a arm64 copy ../tensorflow
   ```
+#### Test
+- configure & build
+  ```console
+  $ cd tflite-build
+  $ cmake -S . -B build
+  $ cmake --build build
+  ```
+- run
+  ```console
+  $ ./build/TFLiteBuildCheck ./models/ssd_mobilenet_v1_1_metadata_1.tflite 
+  ```
 
 ### linux
 #### Prerequisites
@@ -76,6 +87,17 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   ```
   $ ./tflite.py -o macos -a aarch64 copy ../tensorflow
   ```
+#### Test
+- configure & build
+  ```console
+  $ cd tflite-build
+  $ cmake -S . -B build
+  $ cmake --build build
+  ```
+- run
+  ```console
+  $ ./build/TFLiteBuildCheck ./models/ssd_mobilenet_v1_1_metadata_1.tflite 
+  ```
 
 ### windows(x64)
 #### Prerequisites
@@ -96,6 +118,7 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
   - [Visual Studio 2019 and other Products](https://my.visualstudio.com/Downloads?q=Visual%20Studio%202019)
     - Visual C++ Redistributable for Visual Studio 2019 (version 16.11) x64
     - Build Tools for Visual Studio 2019 (version 16.11) x64
+      - In the "Workloads" tab enable "Desktop development with C++"
 #### Build
 - git clone [TensorFlow repository](https://github.com/tensorflow/tensorflow)
   - checkout v2.7.1 release branch
@@ -107,16 +130,26 @@ This includes custom build manuals of TensorFlow Lite C++ shard library with XNN
 - configure and build
   ```cmd
   c:\> cd tensorflow
-  c:\> python ./configure
-  c:\> bazel build -s -c opt \
-    --define tflite_with_xnnpack=true \
-    --define tflite_keep_symbols=true \
-    //tensorflow/lite:tensorflowlite
+  c:\tensorflow> python .\configure.py
+  c:\tensorflow> bazel build -s -c opt `
+    --define tflite_with_xnnpack=true `
+    --define tflite_keep_symbols=true `
+    //tensorflow/lite:tensorflowlite.dll
   ```
 - copy library and headers
   ```cmd
   c:\> cd tflite-build
-  c:\> python ./tflite.py -o windows -a x86_64 copy ../tensorflow
+  c:\tflite-build> python tflite.py -o windows -a x86_64 copy ..\tensorflow
+  ```
+#### Test
+- configure & build
+  ```cmd
+  c:\tflite-build> cmake -S . -B .\build -G "Visual Studio 16 2019" -T host=x64 -A x64
+  c:\tflite-build> cmake --build .\build  --config Release
+  ```
+- run
+  ```cmd
+  c:\tflite-build> .\build\Release\TFLiteBuildCheck.exe .\models\ssd_mobilenet_v1_1_metadata_1.tflite
   ```
 
 ## References
