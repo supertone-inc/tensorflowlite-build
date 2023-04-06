@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -e
+
+git submodule update --init --depth=1
+
+SOURCE_DIR=static-lib
+BUILD_DIR=build/static-lib
+OUTPUT_DIR=output/static-lib
+TENSORFLOW_SOURCE_DIR=tensorflow
+TENSORFLOW_VERSION=${TENSORFLOW_VERSION:=$(
+    cd $TENSORFLOW_SOURCE_DIR
+    git fetch origin --tags --depth=1
+    git describe --tags --abbrev=0 | sed 's/^v//'
+)}
+CMAKE_OPTIONS=$CMAKE_OPTIONS
+CMAKE_BUILD_OPTIONS=$CMAKE_BUILD_OPTIONS
+PARALLEL_JOB_COUNT=$PARALLEL_JOB_COUNT
+
+(
+    cd $TENSORFLOW_SOURCE_DIR
+    git fetch origin --tags --depth=1
+    if [ $TENSORFLOW_VERSION != $(git describe --tags --abbrev=0 | sed 's/^v//') ]; then
+        git checkout v$TENSORFLOW_VERSION
+    fi
+    git submodule update --init --depth=1 --recursive
+)
+
+cmake \
+    -S $SOURCE_DIR \
+    -B $BUILD_DIR \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D CMAKE_CONFIGURATION_TYPES=Release \
+    -D CMAKE_INSTALL_PREFIX=$OUTPUT_DIR \
+    -D TENSORFLOW_SOURCE_DIR=$(realpath $TENSORFLOW_SOURCE_DIR) \
+    $CMAKE_OPTIONS
+cmake \
+    --build $BUILD_DIR \
+    --config Release \
+    --parallel $PARALLEL_JOB_COUNT \
+    $CMAKE_BUILD_OPTIONS
+cmake --install $BUILD_DIR --config Release
