@@ -2,22 +2,17 @@
 
 set -e
 
-git submodule update --init --depth=1
-
 SOURCE_DIR=static-lib
 BUILD_DIR=build/static-lib
 OUTPUT_DIR=output/static-lib
 TENSORFLOW_SOURCE_DIR=tensorflow
-TENSORFLOW_VERSION=${TENSORFLOW_VERSION:=$(
-    cd $TENSORFLOW_SOURCE_DIR
-    git fetch origin --tags --depth=1
-    git describe --tags --abbrev=0 | sed 's/^v//'
-)}
+TENSORFLOW_VERSION=${TENSORFLOW_VERSION:=$(cat TENSORFLOW_VERSION)}
 CMAKE_OPTIONS=$CMAKE_OPTIONS
 CMAKE_BUILD_OPTIONS=$CMAKE_BUILD_OPTIONS
 PARALLEL_JOB_COUNT=$PARALLEL_JOB_COUNT
 
 (
+    git submodule update --init --depth=1 $TENSORFLOW_SOURCE_DIR
     cd $TENSORFLOW_SOURCE_DIR
     git fetch origin --tags --depth=1
     if [ $TENSORFLOW_VERSION != $(git describe --tags --abbrev=0 | sed 's/^v//') ]; then
