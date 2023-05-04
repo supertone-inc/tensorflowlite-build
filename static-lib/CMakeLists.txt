@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.24)
 project(tensorflowlite)
 
-add_subdirectory(${TENSORFLOW_SOURCE_DIR}/tensorflow/lite tensorflow-lite EXCLUDE_FROM_ALL)
+set(TF_SOURCE_DIR ${TENSORFLOW_SOURCE_DIR}/tensorflow)
+set(TFLITE_SOURCE_DIR ${TF_SOURCE_DIR}/lite)
+
+add_subdirectory(${TFLITE_SOURCE_DIR} tensorflow-lite EXCLUDE_FROM_ALL)
 get_target_property(libraries tensorflow-lite LINK_LIBRARIES)
 list(REMOVE_ITEM libraries
     Eigen3::Eigen
@@ -11,14 +14,25 @@ list(REMOVE_ITEM libraries
     ruy::ruy
 )
 
+add_library(telemetry STATIC ${TFLITE_SOURCE_DIR}/profiling/telemetry/telemetry.cc)
+target_include_directories(telemetry PUBLIC ${TENSORFLOW_SOURCE_DIR})
+
 include(bundle_static_library.cmake)
-bundle_static_library(${PROJECT_NAME} ${libraries})
+bundle_static_library(${PROJECT_NAME}
+    tensorflow-lite
+    telemetry
+    ${libraries}
+)
 
 install(
-    DIRECTORY ${TENSORFLOW_SOURCE_DIR}/tensorflow/lite/
+    DIRECTORY ${TFLITE_SOURCE_DIR}/
     DESTINATION include/tensorflow/lite/
     FILES_MATCHING
     PATTERN "*.h"
+)
+install(
+    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/flatbuffers/include/
+    DESTINATION include/
 )
 install(CODE "execute_process( \
     COMMAND find ${CMAKE_INSTALL_PREFIX}/include -type d -empty -delete \
