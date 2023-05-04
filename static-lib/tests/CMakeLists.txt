@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 project(tests)
 
-set(TF_SOURCE_DIR ${TENSORFLOW_SOURCE_DIR}/tensorflow)
-set(TFLITE_SOURCE_DIR ${TF_SOURCE_DIR}/lite)
+set(TFLITE_SOURCE_DIR ${TENSORFLOW_SOURCE_DIR}/tensorflow/lite)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MODULE_PATH ${TFLITE_SOURCE_DIR}/tools/cmake/modules ${CMAKE_MODULE_PATH})

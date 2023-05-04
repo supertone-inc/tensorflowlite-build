@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 project(tensorflowlite)
 
-set(TF_SOURCE_DIR ${TENSORFLOW_SOURCE_DIR}/tensorflow)
-set(TFLITE_SOURCE_DIR ${TF_SOURCE_DIR}/lite)
+set(TFLITE_SOURCE_DIR ${TENSORFLOW_SOURCE_DIR}/tensorflow/lite)
 
 add_subdirectory(${TFLITE_SOURCE_DIR} tensorflow-lite EXCLUDE_FROM_ALL)
 get_target_property(libraries tensorflow-lite LINK_LIBRARIES)
