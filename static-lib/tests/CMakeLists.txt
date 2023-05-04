@@ -11,8 +11,8 @@ find_package(googletest REQUIRED)
 
 add_executable(${PROJECT_NAME} ${TFLITE_SOURCE_DIR}/core/model_test.cc)
 target_include_directories(${PROJECT_NAME} PRIVATE
+    ${TFLITE_INCLUDE_DIR}
     ${TENSORFLOW_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/../flatbuffers/include
     ${CMAKE_CURRENT_BINARY_DIR}/../eigen
     ${CMAKE_CURRENT_BINARY_DIR}/../abseil-cpp
 )
