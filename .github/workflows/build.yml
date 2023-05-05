@@ -88,7 +88,7 @@ jobs:
         run: ./build-${{ matrix.build-type }}.sh
 
       - name: Set archive name
-        run: echo ARCHIVE_NAME=onnxruntime-${{ matrix.target }}-${{ env.TENSORFLOW_VERSION }} >> $GITHUB_ENV
+        run: echo ARCHIVE_NAME=tensorflowlite-${{ matrix.target }}-${{ env.TENSORFLOW_VERSION }} >> $GITHUB_ENV
 
       - name: Archive (UNIX)
         if: runner.os != 'Windows'
