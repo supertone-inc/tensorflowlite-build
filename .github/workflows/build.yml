@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - v*.*.*
+    branches:
+      - "*"
 
 env:
   CMAKE_VERSION: ${{ vars.CMAKE_VERSION }}
