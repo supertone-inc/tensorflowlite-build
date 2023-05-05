@@ -20,6 +20,7 @@ target_link_directories(${PROJECT_NAME} PRIVATE ${TFLITE_LIB_DIR})
 target_link_libraries(${PROJECT_NAME} gtest_main tensorflowlite)
 
 if(UNIX AND NOT APPLE)
+    target_compile_options(gtest PRIVATE -Wno-maybe-uninitialized)
     target_link_libraries(${PROJECT_NAME} dl)
 endif()
 
