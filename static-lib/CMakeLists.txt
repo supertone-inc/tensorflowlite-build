@@ -23,6 +23,8 @@ bundle_static_library(${PROJECT_NAME}
     ${libraries}
 )
 
+set(CMAKE_INSTALL_MESSAGE NEVER)
+
 install(
     DIRECTORY ${TFLITE_SOURCE_DIR}/
     DESTINATION include/tensorflow/lite/
