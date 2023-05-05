@@ -9,7 +9,13 @@ TENSORFLOW_SOURCE_DIR=tensorflow
 TENSORFLOW_VERSION=${TENSORFLOW_VERSION:=$(cat TENSORFLOW_VERSION)}
 CMAKE_OPTIONS=$CMAKE_OPTIONS
 CMAKE_BUILD_OPTIONS=$CMAKE_BUILD_OPTIONS
-PARALLEL_JOB_COUNT=$PARALLEL_JOB_COUNT
+
+case $(uname -s) in
+Darwin) CPU_COUNT=$(sysctl -n hw.physicalcpu) ;;
+Linux) CPU_COUNT=$(grep ^cpu\\scores /proc/cpuinfo | uniq | awk '{print $4}') ;;
+*) CPU_COUNT=$NUMBER_OF_PROCESSORS ;;
+esac
+PARALLEL_JOB_COUNT=${PARALLEL_JOB_COUNT:=$CPU_COUNT}
 
 (
     git submodule update --init --depth=1 $TENSORFLOW_SOURCE_DIR
