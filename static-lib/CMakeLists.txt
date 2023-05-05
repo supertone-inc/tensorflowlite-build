@@ -3,6 +3,9 @@ project(tensorflowlite)
 
 set(TFLITE_SOURCE_DIR ${TENSORFLOW_SOURCE_DIR}/tensorflow/lite)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_INSTALL_MESSAGE NEVER)
+
 add_subdirectory(${TFLITE_SOURCE_DIR} tensorflow-lite EXCLUDE_FROM_ALL)
 get_target_property(libraries tensorflow-lite LINK_LIBRARIES)
 list(REMOVE_ITEM libraries
@@ -22,8 +25,6 @@ bundle_static_library(${PROJECT_NAME}
     telemetry
     ${libraries}
 )
-
-set(CMAKE_INSTALL_MESSAGE NEVER)
 
 install(
     DIRECTORY ${TFLITE_SOURCE_DIR}/
