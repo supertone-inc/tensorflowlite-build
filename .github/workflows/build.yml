@@ -1,0 +1,131 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - v*.*.*
+
+env:
+  CMAKE_VERSION: ${{ vars.CMAKE_VERSION }}
+  XCODE_VERSION: ${{ vars.XCODE_VERSION }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.runs-on }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux-aarch64-static-lib
+            build-type: static-lib
+            runs-on: buildjet-4vcpu-ubuntu-2204-arm
+
+          - target: linux-x86_64-static-lib
+            build-type: static-lib
+            runs-on: ubuntu-latest
+
+          - target: macos-aarch64-static-lib
+            build-type: static-lib
+            runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:${{ vars.XCODE_VERSION }}
+
+          - target: macos-universal2-static-lib
+            build-type: static-lib
+            runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:${{ vars.XCODE_VERSION }}
+
+          - target: macos-x86_64-static-lib
+            build-type: static-lib
+            runs-on: macos-latest
+
+          - target: windows-x86_64-static-lib
+            build-type: static-lib
+            runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ${{ env.CMAKE_VERSION }}
+
+      - name: Setup Xcode
+        if: runner.os == 'macOS'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+
+      - name: Install Coreutils
+        if: runner.os == 'macOS'
+        run: brew install coreutils
+
+      - name: Set TensorFlow version
+        run: |
+          if ${{ startsWith(github.ref, 'refs/tags/v') }}; then
+            TENSORFLOW_VERSION=${GITHUB_REF_NAME#v}
+          else
+            TENSORFLOW_VERSION=$(cat TENSORFLOW_VERSION)
+          fi
+          echo TENSORFLOW_VERSION=$TENSORFLOW_VERSION >> $GITHUB_ENV
+          echo "TensorFlow Version: $TENSORFLOW_VERSION"
+
+      - name: Set parallel job count
+        if: runner.os == 'Linux' && runner.arch == 'ARM64'
+        run: echo PARALLEL_JOB_COUNT=2 >> $GITHUB_ENV
+
+      - name: Set Universal 2 build option
+        if: startsWith(matrix.target, 'osx-universal2')
+        run: echo CMAKE_OPTIONS="-D CMAKE_OSX_ARCHITECTURES=arm64;x86_64" >> $GITHUB_ENV
+
+      - name: Build
+        run: ./build-${{ matrix.build-type }}.sh
+
+      - name: Set archive name
+        run: echo ARCHIVE_NAME=tensorflowlite-${{ matrix.target }}-${{ env.TENSORFLOW_VERSION }} >> $GITHUB_ENV
+
+      - name: Archive (UNIX)
+        if: runner.os != 'Windows'
+        working-directory: output/${{ matrix.build-type }}
+        run: tar cvfz ${{ runner.temp }}/${{ env.ARCHIVE_NAME }}.tgz .
+
+      - name: Archive (Windows)
+        if: runner.os == 'Windows'
+        working-directory: output/${{ matrix.build-type }}
+        run: 7z a "${{ runner.temp }}\${{ env.ARCHIVE_NAME }}.zip" .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.ARCHIVE_NAME }}
+          path: ${{ runner.temp }}/${{ env.ARCHIVE_NAME }}.*
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          omitName: true
+          body: "Official Release: [TensorFlow ${{ github.ref_name }}](https://github.com/tensorflow/tensorflow/releases/tag/${{ github.ref_name }})"
+          artifacts: "*/*.*"
+          allowUpdates: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          omitDraftDuringUpdate: false
