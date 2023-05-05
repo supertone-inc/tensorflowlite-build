@@ -4,6 +4,7 @@ project(tests)
 set(TFLITE_SOURCE_DIR ${TENSORFLOW_SOURCE_DIR}/tensorflow/lite)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded)
 set(CMAKE_MODULE_PATH ${TFLITE_SOURCE_DIR}/tools/cmake/modules ${CMAKE_MODULE_PATH})
 
 find_package(googletest REQUIRED)

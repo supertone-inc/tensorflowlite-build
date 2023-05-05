@@ -4,6 +4,7 @@ project(tensorflowlite)
 set(TFLITE_SOURCE_DIR ${TENSORFLOW_SOURCE_DIR}/tensorflow/lite)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded)
 set(CMAKE_INSTALL_MESSAGE NEVER)
 
 add_subdirectory(${TFLITE_SOURCE_DIR} tensorflow-lite EXCLUDE_FROM_ALL)
