@@ -14,6 +14,7 @@ list(REMOVE_ITEM libraries
     absl::variant
     gemmlowp
     ruy::ruy
+    dl
 )
 
 add_library(telemetry STATIC ${TFLITE_SOURCE_DIR}/profiling/telemetry/telemetry.cc)

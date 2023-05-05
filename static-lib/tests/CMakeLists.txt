@@ -18,6 +18,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_directories(${PROJECT_NAME} PRIVATE ${TFLITE_LIB_DIR})
 target_link_libraries(${PROJECT_NAME} gtest_main tensorflowlite)
 
+if(UNIX AND NOT APPLE)
+    target_link_libraries(${PROJECT_NAME} dl)
+endif()
+
 file(COPY ${TFLITE_SOURCE_DIR}/testdata DESTINATION third_party/tensorflow/lite)
 
 enable_testing()
