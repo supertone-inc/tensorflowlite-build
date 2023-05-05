@@ -78,6 +78,10 @@ jobs:
           echo TENSORFLOW_VERSION=$TENSORFLOW_VERSION >> $GITHUB_ENV
           echo "TensorFlow Version: $TENSORFLOW_VERSION"
 
+      - name: Set parallel job count
+        if: runner.os == 'Linux' && runner.arch == 'ARM64'
+        run: echo PARALLEL_JOB_COUNT=2 >> $GITHUB_ENV
+
       - name: Set Universal 2 build option
         if: startsWith(matrix.target, 'osx-universal2')
         run: echo CMAKE_OPTIONS="-D CMAKE_OSX_ARCHITECTURES=arm64;x86_64" >> $GITHUB_ENV
