@@ -35,7 +35,7 @@ jobs:
             build-type: static-lib
             runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:${{ vars.XCODE_VERSION }}
 
-          - target: macos-universal2-static-lib
+          - target: macos-universal-static-lib
             build-type: static-lib
             runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:${{ vars.XCODE_VERSION }}
 
@@ -80,12 +80,13 @@ jobs:
         if: runner.os == 'Linux' && runner.arch == 'ARM64'
         run: echo PARALLEL_JOB_COUNT=2 >> $GITHUB_ENV
 
-      - name: Set Universal 2 build option
-        if: startsWith(matrix.target, 'osx-universal2')
-        run: echo CMAKE_OPTIONS="-D CMAKE_OSX_ARCHITECTURES=arm64;x86_64" >> $GITHUB_ENV
-
       - name: Build
+        if: "!startsWith(matrix.target, 'macos-universal')"
         run: ./build-${{ matrix.build-type }}.sh
+
+      - name: Build (macOS Universal)
+        if: startsWith(matrix.target, 'macos-universal')
+        run: ./build-${{ matrix.build-type }}-macos-universal.sh
 
       - name: Set archive name
         run: echo ARCHIVE_NAME=tensorflowlite-${{ matrix.target }}-${{ env.TENSORFLOW_VERSION }} >> $GITHUB_ENV
