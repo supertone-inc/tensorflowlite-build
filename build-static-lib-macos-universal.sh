@@ -32,7 +32,7 @@ lipo -remove arm64 -output \
     $OUTPUT_DIR-x86_64/lib/libtensorflowlite.$TENSORFLOW_VERSION.a \
     $OUTPUT_DIR-x86_64/lib/libtensorflowlite.$TENSORFLOW_VERSION.a
 
-mkdir -p output/static-lib/lib
+mkdir -p $OUTPUT_DIR/lib
 
 lipo -create -output \
     $OUTPUT_DIR/lib/libtensorflowlite.$TENSORFLOW_VERSION.a \
