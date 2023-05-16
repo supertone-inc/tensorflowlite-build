@@ -81,7 +81,7 @@ jobs:
         run: echo PARALLEL_JOB_COUNT=2 >> $GITHUB_ENV
 
       - name: Build
-        if: "!startsWith(matrix.target, 'macos-universal')"
+        if: ${{ !startsWith(matrix.target, 'macos-universal') }}
         run: ./build-${{ matrix.build-type }}.sh
 
       - name: Build (macOS Universal)
