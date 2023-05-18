@@ -6,6 +6,8 @@ BUILD_DIR=${BUILD_DIR:=build/static-lib}
 OUTPUT_DIR=${OUTPUT_DIR:=output/static-lib}
 TENSORFLOW_VERSION=${TENSORFLOW_VERSION:=$(cat TENSORFLOW_VERSION)}
 
+cd $(dirname $0)
+
 (
     ARCH=arm64
     BUILD_DIR=$BUILD_DIR-$ARCH

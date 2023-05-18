@@ -25,7 +25,6 @@ jobs:
         include:
           - target: linux-aarch64-static-lib
             runs-on: buildjet-4vcpu-ubuntu-2204-arm
-            pre-build:
             build: >
               PARALLEL_JOB_COUNT=2
               ./build-static-lib.sh
@@ -33,31 +32,26 @@ jobs:
 
           - target: linux-x86_64-static-lib
             runs-on: ubuntu-latest
-            pre-build:
             build: ./build-static-lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: macos-aarch64-static-lib
             runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:${{ vars.XCODE_VERSION }}
-            pre-build: brew install coreutils
             build: ./build-static-lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: macos-universal-static-lib
             runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:${{ vars.XCODE_VERSION }}
-            pre-build: brew install coreutils
             build: ./build-static-lib-macos-universal.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: macos-x86_64-static-lib
             runs-on: macos-latest
-            pre-build: brew install coreutils
             build: ./build-static-lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: windows-x86_64-static-lib
             runs-on: windows-latest
-            pre-build:
             build: ./build-static-lib.sh
             post-build: 7z a $ARCHIVE_DIR/$ARCHIVE_NAME.zip $OUTPUT_DIR/*
 
@@ -90,13 +84,10 @@ jobs:
           echo ARCHIVE_DIR="${{ runner.temp }}" >> $GITHUB_ENV
           echo ARCHIVE_NAME=tensorflowlite-${{ matrix.target }}-${{ env.TENSORFLOW_VERSION }} >> $GITHUB_ENV
 
-      - name: Pre-build
-        run: ${{ matrix.pre-build }}
-
       - name: Build
         run: ${{ matrix.build }}
 
-      - name: Post-build
+      - name: Post build
         run: ${{ matrix.post-build }}
 
       - name: Upload artifact

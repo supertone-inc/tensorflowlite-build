@@ -11,8 +11,6 @@ Currently supports static library builds with the default options only.
 - [CMake](https://cmake.org/install)
 - Bash
   - On Windows, you can use Git Bash provided by [Git for Windows](https://git-scm.com/download/win).
-- `realpath`
-  - On macOS under 13, it can be installed via `brew install coreutils`.
 
 ### Build Script
 
