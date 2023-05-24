@@ -8,25 +8,12 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded)
 set(CMAKE_INSTALL_MESSAGE NEVER)
 
 add_subdirectory(${TFLITE_SOURCE_DIR} tensorflow-lite EXCLUDE_FROM_ALL)
-get_target_property(libraries tensorflow-lite LINK_LIBRARIES)
-list(REMOVE_ITEM libraries
-    Eigen3::Eigen
-    NEON_2_SSE::NEON_2_SSE
-    absl::variant
-    gemmlowp
-    ruy::ruy
-    dl
-)
 
 add_library(telemetry STATIC ${TFLITE_SOURCE_DIR}/profiling/telemetry/telemetry.cc)
 target_include_directories(telemetry PUBLIC ${TENSORFLOW_SOURCE_DIR})
 
 include(bundle_static_library.cmake)
-bundle_static_library(${PROJECT_NAME}
-    tensorflow-lite
-    telemetry
-    ${libraries}
-)
+bundle_static_library(${PROJECT_NAME} tensorflow-lite telemetry)
 
 install(
     DIRECTORY ${TFLITE_SOURCE_DIR}/
