@@ -9,7 +9,7 @@ function(bundle_static_library bundled_target_name)
                 get_filename_component(extension "${input_target}" EXT)
 
                 if(NOT extension STREQUAL ".tbd")
-                    list(APPEND static_libs ${input_target})
+                    list(APPEND static_libs "${input_target}")
                     set(static_libs ${static_libs} PARENT_SCOPE)
                 endif()
             endif()
@@ -56,6 +56,7 @@ function(bundle_static_library bundled_target_name)
     endforeach()
 
     list(REMOVE_DUPLICATES static_libs)
+    set(static_libs ${static_libs} PARENT_SCOPE)
 
     foreach(static_lib IN LISTS static_libs)
         file(APPEND ${CMAKE_BINARY_DIR}/static_libs.txt.in "${static_lib}\n")
