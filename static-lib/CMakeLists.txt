@@ -29,26 +29,7 @@ install(CODE "execute_process( \
     COMMAND find ${CMAKE_INSTALL_PREFIX}/include -type d -empty -delete \
 )")
 
-if(UNIX)
-    execute_process(
-        COMMAND bash "-c" "git describe --tags --abbrev=0 | sed 's/^v//'"
-        WORKING_DIRECTORY ${TENSORFLOW_SOURCE_DIR}
-        OUTPUT_VARIABLE TENSORFLOW_VERSION
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    install(
-        FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${PROJECT_NAME}.a
-        RENAME lib${PROJECT_NAME}.${TENSORFLOW_VERSION}.a
-        DESTINATION lib
-    )
-    install(CODE "execute_process( \
-        COMMAND ${CMAKE_COMMAND} -E create_symlink \
-        lib${PROJECT_NAME}.${TENSORFLOW_VERSION}.a \
-        ${CMAKE_INSTALL_PREFIX}/lib/lib${PROJECT_NAME}.a \
-    )")
-else()
-    install(
-        FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.lib
-        DESTINATION lib
-    )
-endif()
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}
+    DESTINATION lib
+)
