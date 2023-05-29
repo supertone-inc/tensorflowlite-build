@@ -9,12 +9,12 @@ jobs:
   update:
     name: Update
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.TENSORFLOWLITE_BUILD_DEPLOY_KEY_FULL_ACCESS }}
 
       - name: Get TensorFlow versions
         run: |
