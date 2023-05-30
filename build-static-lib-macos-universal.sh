@@ -27,23 +27,21 @@ cd $(dirname $0)
 )
 
 lipo -remove x86_64 -output \
-    $OUTPUT_DIR-arm64/lib/libtensorflowlite.$TENSORFLOW_VERSION.a \
-    $OUTPUT_DIR-arm64/lib/libtensorflowlite.$TENSORFLOW_VERSION.a
+    $OUTPUT_DIR-arm64/lib/libtensorflowlite.a \
+    $OUTPUT_DIR-arm64/lib/libtensorflowlite.a
 
 lipo -remove arm64 -output \
-    $OUTPUT_DIR-x86_64/lib/libtensorflowlite.$TENSORFLOW_VERSION.a \
-    $OUTPUT_DIR-x86_64/lib/libtensorflowlite.$TENSORFLOW_VERSION.a
+    $OUTPUT_DIR-x86_64/lib/libtensorflowlite.a \
+    $OUTPUT_DIR-x86_64/lib/libtensorflowlite.a
 
 mkdir -p $OUTPUT_DIR/lib
 
 lipo -create -output \
-    $OUTPUT_DIR/lib/libtensorflowlite.$TENSORFLOW_VERSION.a \
-    $OUTPUT_DIR-arm64/lib/libtensorflowlite.$TENSORFLOW_VERSION.a \
-    $OUTPUT_DIR-x86_64/lib/libtensorflowlite.$TENSORFLOW_VERSION.a
+    $OUTPUT_DIR/lib/libtensorflowlite.a \
+    $OUTPUT_DIR-arm64/lib/libtensorflowlite.a \
+    $OUTPUT_DIR-x86_64/lib/libtensorflowlite.a
 
-ln -sf libtensorflowlite.$TENSORFLOW_VERSION.a $OUTPUT_DIR/lib/libtensorflowlite.a
-
-cp -r $OUTPUT_DIR-x86_64/include $OUTPUT_DIR
+cp -r $OUTPUT_DIR-arm64/include $OUTPUT_DIR
 
 (
     ARCH=arm64
