@@ -11,8 +11,8 @@ on:
       - v*.*.*
 
 env:
-  CMAKE_VERSION: ${{ vars.CMAKE_VERSION }}
-  XCODE_VERSION: ${{ vars.XCODE_VERSION }}
+  CMAKE_VERSION: 3.26
+  XCODE_VERSION: 14.2
 
 defaults:
   run:
@@ -40,12 +40,12 @@ jobs:
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: macos-aarch64-static-lib
-            runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:${{ vars.XCODE_VERSION }}
+            runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:14.2
             build: ./build-static-lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: macos-universal-static-lib
-            runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:${{ vars.XCODE_VERSION }}
+            runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:14.2
             build: ./build-static-lib-macos-universal.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
