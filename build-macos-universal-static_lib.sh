@@ -2,8 +2,8 @@
 
 set -e
 
-BUILD_DIR=${BUILD_DIR:=build/static-lib}
-OUTPUT_DIR=${OUTPUT_DIR:=output/static-lib}
+BUILD_DIR=${BUILD_DIR:=build/static_lib}
+OUTPUT_DIR=${OUTPUT_DIR:=output/static_lib}
 
 cd $(dirname $0)
 
@@ -13,7 +13,7 @@ cd $(dirname $0)
     OUTPUT_DIR=$OUTPUT_DIR-$ARCH
     CMAKE_OPTIONS="-D CMAKE_OSX_ARCHITECTURES=$ARCH $CMAKE_OPTIONS"
     SKIP_TESTS=true
-    source ./build-static-lib.sh
+    source ./build-static_lib.sh
 )
 
 (
@@ -22,7 +22,7 @@ cd $(dirname $0)
     OUTPUT_DIR=$OUTPUT_DIR-$ARCH
     CMAKE_OPTIONS="-D CMAKE_OSX_ARCHITECTURES=$ARCH $CMAKE_OPTIONS"
     SKIP_TESTS=true
-    source ./build-static-lib.sh
+    source ./build-static_lib.sh
 )
 
 lipo -remove x86_64 -output \
@@ -47,7 +47,7 @@ cp -r $OUTPUT_DIR-arm64/include $OUTPUT_DIR
     BUILD_DIR=$BUILD_DIR-$ARCH
     TESTS_CMAKE_OPTIONS="-D CMAKE_OSX_ARCHITECTURES=$ARCH $TESTS_CMAKE_OPTIONS"
     SKIP_BUILD=true
-    source ./build-static-lib.sh
+    source ./build-static_lib.sh
 )
 
 (
@@ -55,5 +55,5 @@ cp -r $OUTPUT_DIR-arm64/include $OUTPUT_DIR
     BUILD_DIR=$BUILD_DIR-$ARCH
     TESTS_CMAKE_OPTIONS="-D CMAKE_OSX_ARCHITECTURES=$ARCH $TESTS_CMAKE_OPTIONS"
     SKIP_BUILD=true
-    source ./build-static-lib.sh
+    source ./build-static_lib.sh
 )

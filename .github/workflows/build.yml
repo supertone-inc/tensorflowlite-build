@@ -28,36 +28,36 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - target: linux-aarch64-static-lib
+          - target: linux-aarch64-static_lib
             runs-on: buildjet-4vcpu-ubuntu-2204-arm
             build: >
               PARALLEL_JOB_COUNT=2
-              ./build-static-lib.sh
+              ./build-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
-          - target: linux-x86_64-static-lib
+          - target: linux-x86_64-static_lib
             runs-on: ubuntu-latest
-            build: ./build-static-lib.sh
+            build: ./build-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
-          - target: macos-aarch64-static-lib
+          - target: macos-aarch64-static_lib
             runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:14.2
-            build: ./build-static-lib.sh
+            build: ./build-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
-          - target: macos-universal-static-lib
+          - target: macos-universal-static_lib
             runs-on: ghcr.io/cirruslabs/macos-ventura-xcode:14.2
-            build: ./build-static-lib-macos-universal.sh
+            build: ./build-macos-universal-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
-          - target: macos-x86_64-static-lib
+          - target: macos-x86_64-static_lib
             runs-on: macos-latest
-            build: ./build-static-lib.sh
+            build: ./build-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
-          - target: windows-x86_64-static-lib
+          - target: windows-x86_64-static_lib
             runs-on: windows-latest
-            build: ./build-static-lib.sh
+            build: ./build-static_lib.sh
             post-build: 7z a $ARCHIVE_DIR/$ARCHIVE_NAME.zip $OUTPUT_DIR/*
 
     steps:

@@ -15,5 +15,5 @@ Currently supports static library builds with the default options only.
 ### Build Script
 
 ```sh
-./build-static-lib.sh
+./build-static_lib.sh
 ```
