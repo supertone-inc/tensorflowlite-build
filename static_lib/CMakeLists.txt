@@ -10,8 +10,11 @@ set(CMAKE_INSTALL_MESSAGE NEVER)
 
 add_subdirectory(${TFLITE_SOURCE_DIR} tensorflow-lite EXCLUDE_FROM_ALL)
 
+add_library(telemetry STATIC ${TFLITE_SOURCE_DIR}/profiling/telemetry/telemetry.cc)
+target_include_directories(telemetry PUBLIC ${TENSORFLOW_SOURCE_DIR})
+
 include(bundle_static_library.cmake)
-bundle_static_library(${PROJECT_NAME} tensorflow-lite)
+bundle_static_library(${PROJECT_NAME} tensorflow-lite telemetry)
 
 install(
     FILES ${TF_SOURCE_DIR}/core/public/version.h

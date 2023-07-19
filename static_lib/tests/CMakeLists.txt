@@ -9,10 +9,7 @@ set(CMAKE_MODULE_PATH ${TFLITE_SOURCE_DIR}/tools/cmake/modules ${CMAKE_MODULE_PA
 
 find_package(googletest REQUIRED)
 
-add_executable(${PROJECT_NAME}
-    model_test.cc
-    ${TFLITE_SOURCE_DIR}/profiling/telemetry/telemetry.cc
-)
+add_executable(${PROJECT_NAME} model_test.cc)
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${TFLITE_INCLUDE_DIR}
     ${TENSORFLOW_SOURCE_DIR}
