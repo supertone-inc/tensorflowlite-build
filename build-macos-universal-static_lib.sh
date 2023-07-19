@@ -27,11 +27,13 @@ cd $(dirname $0)
 
 lipo -remove x86_64 -output \
     $OUTPUT_DIR-arm64/lib/libtensorflowlite.a \
-    $OUTPUT_DIR-arm64/lib/libtensorflowlite.a
+    $OUTPUT_DIR-arm64/lib/libtensorflowlite.a \
+    | true
 
 lipo -remove arm64 -output \
     $OUTPUT_DIR-x86_64/lib/libtensorflowlite.a \
-    $OUTPUT_DIR-x86_64/lib/libtensorflowlite.a
+    $OUTPUT_DIR-x86_64/lib/libtensorflowlite.a \
+    | true
 
 mkdir -p $OUTPUT_DIR/lib
 
