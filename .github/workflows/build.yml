@@ -37,27 +37,27 @@ jobs:
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: linux-x86_64-static_lib
-            runs-on: ubuntu-latest
+            runs-on: ubuntu-22.04
             build: ./build-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: macos-aarch64-static_lib
-            runs-on: macos-latest-xlarge
+            runs-on: macos-13-xlarge
             build: ./build-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: macos-universal-static_lib
-            runs-on: macos-latest-xlarge
+            runs-on: macos-13-xlarge
             build: ./build-macos-universal-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: macos-x86_64-static_lib
-            runs-on: macos-latest
+            runs-on: macos-13
             build: ./build-static_lib.sh
             post-build: tar -czvf $ARCHIVE_DIR/$ARCHIVE_NAME.tar.gz -C $OUTPUT_DIR .
 
           - target: windows-x86_64-static_lib
-            runs-on: windows-latest
+            runs-on: windows-2022
             build: ./build-static_lib.sh
             post-build: 7z a $ARCHIVE_DIR/$ARCHIVE_NAME.zip $OUTPUT_DIR/*
 
